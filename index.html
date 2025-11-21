@@ -1,0 +1,800 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Animal Farm - Introduction Lesson</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Georgia', serif;
+            line-height: 1.6;
+            background: linear-gradient(135deg, #2d5016 0%, #4a7c2c 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        @media print {
+            body {
+                background: white !important;
+                color: black !important;
+            }
+            
+            .progress-bar {
+                display: none !important;
+            }
+            
+            .lesson-card {
+                box-shadow: none !important;
+                border: 1px solid #ccc !important;
+                page-break-inside: avoid;
+                margin-bottom: 20px !important;
+            }
+            
+            .lesson-card::before {
+                background: #333 !important;
+            }
+            
+            .header {
+                background: white !important;
+                color: black !important;
+            }
+            
+            .timeline {
+                box-shadow: none !important;
+                border: 1px solid #ccc !important;
+            }
+            
+            .homework-box {
+                background: #f0f0f0 !important;
+                color: black !important;
+                border: 1px solid #ccc !important;
+            }
+            
+            .answer {
+                display: block !important;
+            }
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+            padding: 40px 0;
+            background: rgba(0,0,0,0.2);
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .lesson-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .lesson-card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .lesson-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #8b4513, #d2691e, #6b8e23);
+        }
+
+        .lesson-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+        }
+
+        .card-title {
+            font-size: 1.5rem;
+            color: #2d5016;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .card-icon {
+            width: 30px;
+            height: 30px;
+            background: linear-gradient(135deg, #6b8e23, #8b4513);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+
+        .question-section {
+            margin-bottom: 20px;
+        }
+
+        .question {
+            font-weight: bold;
+            color: #8b4513;
+            margin-bottom: 10px;
+            cursor: pointer;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border-left: 4px solid #6b8e23;
+            transition: all 0.3s ease;
+        }
+
+        .question:hover {
+            background: #e8f4e8;
+            transform: translateX(5px);
+        }
+
+        .answer {
+            padding: 15px;
+            background: #f0f8f0;
+            border-radius: 8px;
+            margin-top: 10px;
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .answer.show {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .timeline {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin-top: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .timeline h3 {
+            text-align: center;
+            color: #2d5016;
+            margin-bottom: 30px;
+            font-size: 1.8rem;
+        }
+
+        .timeline-item {
+            display: flex;
+            margin-bottom: 20px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            border-left: 5px solid #6b8e23;
+            transition: all 0.3s ease;
+        }
+
+        .timeline-item:hover {
+            background: #e8f4e8;
+            transform: translateX(10px);
+        }
+
+        .timeline-year {
+            font-weight: bold;
+            color: #2d5016;
+            min-width: 80px;
+            font-size: 1.1rem;
+        }
+
+        .timeline-content {
+            margin-left: 20px;
+        }
+
+        .image-links {
+            margin-top: 15px;
+            padding: 15px;
+            background: #fffef0;
+            border-left: 4px solid #d2691e;
+            border-radius: 5px;
+        }
+
+        .image-links a {
+            color: #8b4513;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .image-links a:hover {
+            color: #6b8e23;
+            text-decoration: underline;
+        }
+
+        .character-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .character-card {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .character-card:hover {
+            border-color: #6b8e23;
+            background: #e8f4e8;
+        }
+
+        .character-name {
+            font-weight: bold;
+            color: #2d5016;
+            margin-bottom: 5px;
+        }
+
+        .character-role {
+            font-size: 0.9rem;
+            color: #7f8c8d;
+        }
+
+        .homework-box {
+            background: linear-gradient(135deg, #8b4513, #d2691e);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            margin: 30px 0;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .homework-box h2 {
+            font-size: 2rem;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .homework-list {
+            background: rgba(255,255,255,0.1);
+            padding: 20px;
+            border-radius: 10px;
+            backdrop-filter: blur(5px);
+        }
+
+        .homework-item {
+            padding: 15px;
+            margin-bottom: 15px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 8px;
+            border-left: 4px solid #fff;
+        }
+
+        .homework-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .homework-item strong {
+            font-size: 1.1rem;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .progress-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: rgba(255,255,255,0.2);
+            z-index: 1000;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #8b4513, #d2691e, #6b8e23);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .theme-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .theme-list li {
+            padding: 10px;
+            margin-bottom: 10px;
+            background: #f0f8f0;
+            border-radius: 5px;
+            border-left: 4px solid #6b8e23;
+        }
+
+        .theme-list strong {
+            color: #2d5016;
+        }
+
+        .tab-container {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            overflow: hidden;
+            margin-bottom: 30px;
+        }
+
+        .tab-buttons {
+            display: flex;
+            background: linear-gradient(135deg, #2d5016, #4a7c2c);
+            flex-wrap: wrap;
+        }
+
+        .tab-button {
+            flex: 1;
+            padding: 20px;
+            background: transparent;
+            border: none;
+            color: white;
+            font-size: 1.1rem;
+            font-family: 'Georgia', serif;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-right: 1px solid rgba(255,255,255,0.2);
+            min-width: 200px;
+        }
+
+        .tab-button:last-child {
+            border-right: none;
+        }
+
+        .tab-button:hover {
+            background: rgba(255,255,255,0.1);
+        }
+
+        .tab-button.active {
+            background: white;
+            color: #2d5016;
+            font-weight: bold;
+        }
+
+        .tab-content {
+            display: none;
+            padding: 30px;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @media (max-width: 768px) {
+            .lesson-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .character-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .tab-button {
+                font-size: 0.9rem;
+                padding: 15px 10px;
+                min-width: 150px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="progress-bar">
+        <div class="progress-fill" id="progressFill"></div>
+    </div>
+
+    <div class="container">
+        <div class="header">
+            <h1>Animal Farm</h1>
+            <p>Introduction Lesson - Understanding Orwell's Political Allegory</p>
+        </div>
+
+        <div class="tab-container">
+            <div class="tab-buttons">
+                <button class="tab-button active" onclick="openTab(event, 'tab1')">📚 Author & History</button>
+                <button class="tab-button" onclick="openTab(event, 'tab2')">🐷 Characters & Setting</button>
+                <button class="tab-button" onclick="openTab(event, 'tab3')">🎭 Themes & Literary Concepts</button>
+                <button class="tab-button" onclick="openTab(event, 'tab4')">📝 Homework</button>
+            </div>
+
+            <!-- Tab 1: Author & History -->
+            <div id="tab1" class="tab-content active">
+                <div class="lesson-grid">
+            <div class="lesson-card">
+                <div class="card-title">
+                    <div class="card-icon">👤</div>
+                    Who is George Orwell?
+                </div>
+                <div class="question-section">
+                    <div class="question" onclick="toggleAnswer('author-answer')">
+                        Click to learn about the author →
+                    </div>
+                    <div class="answer" id="author-answer">
+                        <strong>George Orwell (1903-1950)</strong><br><br>
+                        • Real name: Eric Arthur Blair<br>
+                        • Born in British India, educated in England at Eton College<br>
+                        • Served as a police officer in Burma (Myanmar), which shaped his anti-imperialist views<br>
+                        • Fought in the Spanish Civil War (1936-1939) against fascism<br>
+                        • Witnessed firsthand the dangers of totalitarianism and propaganda<br>
+                        • Known for clear, direct prose and fierce opposition to totalitarianism<br>
+                        • Also wrote "1984," another famous dystopian novel<br>
+                        • Died of tuberculosis at age 46, shortly after publishing "1984"<br><br>
+                        
+                        <div class="image-links">
+                            📸 <strong>Visual Resources:</strong><br>
+                            • <a href="https://www.biography.com/writer/george-orwell" target="_blank">George Orwell Biography & Photos</a><br>
+                            • <a href="https://www.orwellfoundation.com/" target="_blank">The Orwell Foundation</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="lesson-card">
+                <div class="card-title">
+                    <div class="card-icon">🏛️</div>
+                    Historical Context
+                </div>
+                <div class="question-section">
+                    <div class="question" onclick="toggleAnswer('context-answer')">
+                        What events inspired Animal Farm? →
+                    </div>
+                    <div class="answer" id="context-answer">
+                        <strong>The Russian Revolution & Stalin Era</strong><br><br>
+                        • Written as an allegory of the Russian Revolution (1917) and Stalin's rise to power<br>
+                        • Published in 1945, near the end of World War II<br>
+                        • Critiques how the idealistic revolution was corrupted by power<br>
+                        • The Bolshevik Revolution promised equality but resulted in dictatorship<br>
+                        • Stalin's totalitarian regime (1924-1953) used propaganda, fear, and violence<br>
+                        • The novel was rejected by several publishers for being too critical of the Soviet Union<br>
+                        • Serves as a warning about how revolutions can be betrayed by their leaders<br><br>
+                        
+                        <div class="image-links">
+                            📸 <strong>Visual Resources:</strong><br>
+                            • <a href="https://www.history.com/topics/russia/russian-revolution" target="_blank">History.com - Russian Revolution</a><br>
+                            • <a href="https://www.britannica.com/event/Russian-Revolution" target="_blank">Britannica - Russian Revolution Overview</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+                </div>
+
+                <div class="timeline">
+                    <h3>Historical Timeline & Novel Parallels</h3>
+                    <div class="timeline-item">
+                        <div class="timeline-year">1917</div>
+                        <div class="timeline-content">Russian Revolution overthrows Tsar Nicholas II → <em>Mr. Jones is overthrown</em></div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-year">1918-1922</div>
+                        <div class="timeline-content">Russian Civil War between Reds and Whites → <em>Battle of the Cowshed</em></div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-year">1924</div>
+                        <div class="timeline-content">Lenin dies; Stalin begins consolidating power → <em>Old Major dies; Napoleon rises</em></div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-year">1927</div>
+                        <div class="timeline-content">Trotsky expelled from Communist Party → <em>Snowball chased from farm</em></div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-year">1928-1932</div>
+                        <div class="timeline-content">Stalin's Five-Year Plans and forced collectivization → <em>Building of the windmill</em></div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-year">1930s</div>
+                        <div class="timeline-content">Stalin's Great Purge - show trials and executions → <em>Napoleon's executions of "traitors"</em></div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-year">1943-45</div>
+                        <div class="timeline-content">George Orwell writes and publishes Animal Farm</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab 2: Characters & Setting -->
+            <div id="tab2" class="tab-content">
+                <div class="lesson-grid">
+            <div class="lesson-card">
+                <div class="card-title">
+                    <div class="card-icon">🐷</div>
+                    Main Characters (Animals)
+                </div>
+                <div class="question-section">
+                    <div class="question" onclick="toggleAnswer('characters-answer')">
+                        Who are the key animals? →
+                    </div>
+                    <div class="answer" id="characters-answer">
+                        <div class="character-grid">
+                            <div class="character-card" onclick="showCharacterInfo('Napoleon', 'Pig leader (represents Stalin)')">
+                                <div class="character-name">Napoleon</div>
+                                <div class="character-role">Pig Leader</div>
+                            </div>
+                            <div class="character-card" onclick="showCharacterInfo('Snowball', 'Idealistic pig (represents Trotsky)')">
+                                <div class="character-name">Snowball</div>
+                                <div class="character-role">Revolutionary Pig</div>
+                            </div>
+                            <div class="character-card" onclick="showCharacterInfo('Squealer', 'Propaganda minister pig')">
+                                <div class="character-name">Squealer</div>
+                                <div class="character-role">Propagandist</div>
+                            </div>
+                            <div class="character-card" onclick="showCharacterInfo('Boxer', 'Loyal, hardworking horse')">
+                                <div class="character-name">Boxer</div>
+                                <div class="character-role">Cart Horse</div>
+                            </div>
+                            <div class="character-card" onclick="showCharacterInfo('Old Major', 'Wise pig who inspires revolution')">
+                                <div class="character-name">Old Major</div>
+                                <div class="character-role">Elder Pig</div>
+                            </div>
+                            <div class="character-card" onclick="showCharacterInfo('Benjamin', 'Cynical, wise donkey')">
+                                <div class="character-name">Benjamin</div>
+                                <div class="character-role">Donkey</div>
+                            </div>
+                            <div class="character-card" onclick="showCharacterInfo('Clover', 'Motherly, caring mare')">
+                                <div class="character-name">Clover</div>
+                                <div class="character-role">Mare</div>
+                            </div>
+                            <div class="character-card" onclick="showCharacterInfo('Mr. Jones', 'Original farm owner')">
+                                <div class="character-name">Mr. Jones</div>
+                                <div class="character-role">Human Farmer</div>
+                            </div>
+                        </div>
+                        <br>
+                        <div class="image-links">
+                            📸 <strong>Visual Resources:</strong><br>
+                            • <a href="https://www.sparknotes.com/lit/animalfarm/characters/" target="_blank">SparkNotes - Character Analysis</a><br>
+                            • <a href="https://www.cliffsnotes.com/literature/a/animal-farm/character-map" target="_blank">CliffsNotes - Character Map</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="lesson-card">
+                <div class="card-title">
+                    <div class="card-icon">🏡</div>
+                    Setting & Structure
+                </div>
+                <div class="question-section">
+                    <div class="question" onclick="toggleAnswer('setting-answer')">
+                        Where and when does it take place? →
+                    </div>
+                    <div class="answer" id="setting-answer">
+                        <strong>Manor Farm (later Animal Farm)</strong><br><br>
+                        • Rural farm in England<br>
+                        • Represents Russia and the Soviet Union<br>
+                        • Time period is deliberately vague but parallels 1917-1940s<br>
+                        • The farm becomes increasingly isolated from the outside world<br>
+                        • Simple setting allows focus on characters and political commentary<br><br>
+
+                        <strong>Story Structure:</strong><br>
+                        The novella is divided into 10 chapters, following the arc from revolution through corruption:<br>
+                        1. The dream of rebellion (Old Major's speech)<br>
+                        2. The rebellion itself<br>
+                        3. Establishment of new order<br>
+                        4. Power struggles<br>
+                        5. Consolidation of dictatorship<br>
+                        6. Complete corruption and betrayal
+                    </div>
+                </div>
+            </div>
+                </div>
+            </div>
+
+            <!-- Tab 3: Themes & Literary Concepts -->
+            <div id="tab3" class="tab-content">
+                <div class="lesson-grid">
+            <div class="lesson-card">
+                <div class="card-title">
+                    <div class="card-icon">🎭</div>
+                    Major Themes
+                </div>
+                <div class="question-section">
+                    <div class="question" onclick="toggleAnswer('themes-answer')">
+                        What are the central themes? →
+                    </div>
+                    <div class="answer" id="themes-answer">
+                        <ul class="theme-list">
+                            <li><strong>Corruption of Power:</strong> How absolute power corrupts absolutely, and revolutionary ideals are betrayed by those in power</li>
+                            <li><strong>Class Struggle:</strong> The conflict between workers and ruling class, and how new hierarchies replace old ones</li>
+                            <li><strong>Propaganda & Manipulation:</strong> How language is used to control thought and justify oppression</li>
+                            <li><strong>The Dangers of Ignorance:</strong> How lack of education makes the masses vulnerable to manipulation</li>
+                            <li><strong>Totalitarianism:</strong> The methods dictators use to maintain control through fear, propaganda, and violence</li>
+                            <li><strong>Betrayal of Ideals:</strong> How revolutionary principles are gradually abandoned for personal gain</li>
+                            <li><strong>False Equality:</strong> The irony of "All animals are equal, but some animals are more equal than others"</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="lesson-card">
+                <div class="card-title">
+                    <div class="card-icon">📖</div>
+                    Literary Concepts
+                </div>
+                <div class="question-section">
+                    <div class="question" onclick="toggleAnswer('literary-answer')">
+                        What makes this story unique? →
+                    </div>
+                    <div class="answer" id="literary-answer">
+                        <strong>Allegory</strong><br>
+                        Animal Farm is a political allegory where characters and events represent real historical figures and events from the Russian Revolution. Each animal symbolizes a type of person or political figure.<br><br>
+
+                        <strong>Satire</strong><br>
+                        Orwell uses humor, irony, and exaggeration to criticize totalitarianism and expose the hypocrisy of corrupt leaders. The absurdity of pigs walking on two legs highlights the ridiculousness of their betrayal.<br><br>
+
+                        <strong>Fable Structure</strong><br>
+                        Like traditional fables, the story uses animals to teach a moral lesson. However, instead of a simple moral, Orwell presents complex political commentary.<br><br>
+
+                        <strong>Symbolism</strong><br>
+                        • <strong>The Farm:</strong> Russia/Soviet Union<br>
+                        • <strong>The Windmill:</strong> Stalin's Five-Year Plans<br>
+                        • <strong>The Seven Commandments:</strong> Communist ideology that gets corrupted<br>
+                        • <strong>The Song "Beasts of England":</strong> Revolutionary anthem and hope
+                    </div>
+                </div>
+            </div>
+                </div>
+
+                <div class="timeline" style="background: linear-gradient(135deg, #e8f4e8, #f0f8f0); border: 2px solid #6b8e23;">
+                    <h3 style="color: #2d5016;">🎯 Learning Objectives</h3>
+                    <p style="text-align: center; color: #555; margin-bottom: 20px;">By the end of this unit, you will be able to:</p>
+                    
+                    <div class="timeline-item" style="border-left-color: #8b4513;">
+                        <div style="width: 100%;">
+                            ✓ Understand how allegory works as a literary device and identify allegorical connections between characters and historical figures
+                        </div>
+                    </div>
+                    <div class="timeline-item" style="border-left-color: #8b4513;">
+                        <div style="width: 100%;">
+                            ✓ Analyze how propaganda and manipulation are used to control populations
+                        </div>
+                    </div>
+                    <div class="timeline-item" style="border-left-color: #8b4513;">
+                        <div style="width: 100%;">
+                            ✓ Recognize the historical parallels between the Russian Revolution and the events in Animal Farm
+                        </div>
+                    </div>
+                    <div class="timeline-item" style="border-left-color: #8b4513;">
+                        <div style="width: 100%;">
+                            ✓ Evaluate how power corrupts and how revolutionary ideals can be betrayed
+                        </div>
+                    </div>
+                    <div class="timeline-item" style="border-left-color: #8b4513;">
+                        <div style="width: 100%;">
+                            ✓ Apply lessons from Animal Farm to contemporary political situations
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab 4: Homework -->
+            <div id="tab4" class="tab-content">
+                <div class="homework-box">
+                    <h2>📝 Homework Assignment</h2>
+                    <div class="homework-list">
+                        <div class="homework-item">
+                            <strong>Part 1: Reading</strong>
+                            Read Chapter 1 of Animal Farm carefully. Pay special attention to:
+                            <ul style="margin-top: 10px; margin-left: 20px;">
+                                <li>Old Major's speech and his vision for the farm</li>
+                                <li>The living conditions of the animals under Mr. Jones</li>
+                                <li>The song "Beasts of England" and what it represents</li>
+                                <li>How different animals react to Old Major's ideas</li>
+                            </ul>
+                        </div>
+
+                        <div class="homework-item">
+                            <strong>Part 2: Reflection Questions</strong>
+                            After reading Chapter 1, write thoughtful responses to these questions:
+                            <ul style="margin-top: 10px; margin-left: 20px;">
+                                <li>What makes Old Major an effective speaker in Chapter 1? Cite specific examples from his speech.</li>
+                                <li>What does the song "Beasts of England" reveal about the animals' hopes and dreams for the future?</li>
+                            </ul>
+                        </div>
+
+                        <div class="homework-item">
+                            Review vocabularies attached
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function openTab(evt, tabName) {
+            // Hide all tab content
+            const tabContents = document.getElementsByClassName('tab-content');
+            for (let i = 0; i < tabContents.length; i++) {
+                tabContents[i].classList.remove('active');
+            }
+            
+            // Remove active class from all buttons
+            const tabButtons = document.getElementsByClassName('tab-button');
+            for (let i = 0; i < tabButtons.length; i++) {
+                tabButtons[i].classList.remove('active');
+            }
+            
+            // Show current tab and mark button as active
+            document.getElementById(tabName).classList.add('active');
+            evt.currentTarget.classList.add('active');
+        }
+
+        function toggleAnswer(answerId) {
+            const answer = document.getElementById(answerId);
+            answer.classList.toggle('show');
+            updateProgress();
+        }
+
+        function updateProgress() {
+            const totalAnswers = document.querySelectorAll('.answer').length;
+            const shownAnswers = document.querySelectorAll('.answer.show').length;
+            const progress = (shownAnswers / totalAnswers) * 100;
+            document.getElementById('progressFill').style.width = progress + '%';
+        }
+
+        function showCharacterInfo(name, description) {
+            alert(`${name}\n\n${description}\n\nYou'll learn more about this character as we read the novel!`);
+        }
+
+        // Add smooth scrolling and interactive elements
+        document.addEventListener('DOMContentLoaded', function() {
+            const cards = document.querySelectorAll('.lesson-card');
+            cards.forEach((card, index) => {
+                card.style.animationDelay = (index * 0.1) + 's';
+            });
+        });
+
+        // Timeline item interactions
+        document.querySelectorAll('.timeline-item').forEach(item => {
+            item.addEventListener('click', function() {
+                this.style.background = '#d5e8d5';
+                setTimeout(() => {
+                    this.style.background = '#f8f9fa';
+                }, 1000);
+            });
+        });
+    </script>
+</body>
+</html>
