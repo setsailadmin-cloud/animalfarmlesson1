@@ -1,0 +1,1486 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SetSail Novel Course - Animal Farm Lesson 1</title>
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Tailwind Configuration for class-based Dark Mode -->
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          animation: {
+            fadeIn: 'fadeIn 0.3s ease-out forwards',
+          },
+          keyframes: {
+            fadeIn: {
+              '0%': { opacity: '0', transform: 'translateY(8px)' },
+              '100%': { opacity: '1', transform: 'translateY(0)' },
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    /* Custom Scrollbar and Helper Classes */
+    .scrollbar-none::-webkit-scrollbar {
+      display: none;
+    }
+    .scrollbar-none {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+    .animate-fadeIn {
+      animation: fadeIn 0.3s ease-out forwards;
+    }
+  </style>
+
+  <!-- ==========================================
+      CORE DATA & APP CONTROLLER
+      ========================================== -->
+  <script>
+    const characterData = [
+      {
+        id: 'old-major',
+        name: 'Old Major',
+        species: 'Pig (Boar)',
+        allegory: 'Karl Marx / Vladimir Lenin',
+        role: 'The visionary father of Animalism. He gathers the animals in the barn to share his dream of a utopian society free of human oppression.',
+        quote: '"Man is the only creature that consumes without producing... Remove Man from the scene, and the root cause of hunger and overwork is abolished forever."',
+        symbolism: 'Ideological inspiration, intellectual foundations of revolution, and the tragic naivety of early utopian plans.',
+        avatar: '🐷',
+        color: 'from-amber-500/20 to-amber-600/20 dark:from-amber-950/40 dark:to-amber-900/40 border-amber-500'
+      },
+      {
+        id: 'napoleon',
+        name: 'Napoleon',
+        species: 'Pig (Boar)',
+        allegory: 'Joseph Stalin',
+        role: 'A large, rather fierce-looking Berkshire boar. Not much of a talker, but with a reputation for getting his own way. He quietly consolidates power.',
+        quote: '"The education of the young is more important than anything that could be done for those who are already grown up."',
+        symbolism: 'Tyranny, the corruption of revolutionary ideals, political pragmatism, and state control through fear and physical force.',
+        avatar: '🐗',
+        color: 'from-red-500/20 to-red-600/20 dark:from-red-950/40 dark:to-red-900/40 border-red-500'
+      },
+      {
+        id: 'snowball',
+        name: 'Snowball',
+        species: 'Pig (Boar)',
+        allegory: 'Leon Trotsky',
+        role: 'A vivacious pig, quicker in speech and more inventive than Napoleon. He is passionate about modernizing the farm and spreading the revolution.',
+        quote: '"Let us make it a point of honour to get in the harvest more quickly than Jones and his men could do."',
+        symbolism: 'Intellectual leadership, engineering progress, revolutionary fervor, and the tragic vulnerability of idealists to brutal dictators.',
+        avatar: '🐖',
+        color: 'from-blue-500/20 to-blue-600/20 dark:from-blue-950/40 dark:to-blue-900/40 border-blue-500'
+      },
+      {
+        id: 'squealer',
+        name: 'Squealer',
+        species: 'Pig',
+        allegory: 'Soviet Press / Pravda / Vyacheslav Molotov',
+        role: 'A small, fat pig with very round cheeks, twinkling eyes, and a shrill voice. A brilliant talker who can turn "black into white."',
+        quote: '"No one believes more firmly than Comrade Napoleon that all animals are equal... But sometimes you might make the wrong decisions, comrades!"',
+        symbolism: 'Propaganda, psychological manipulation, gaslighting, and the distortion of language to justify authoritarian rule.',
+        avatar: '🗣️',
+        color: 'from-emerald-500/20 to-emerald-600/20 dark:from-emerald-950/40 dark:to-emerald-900/40 border-emerald-500'
+      },
+      {
+        id: 'boxer',
+        name: 'Boxer',
+        species: 'Cart-Horse',
+        allegory: 'The Loyal Soviet Working Class (Stakhanovites)',
+        role: 'An enormous, incredibly strong beast of burden. Not highly intelligent, but respected for his steady character and tremendous work ethic.',
+        quote: '"I will work harder!" and "Napoleon is always right!"',
+        symbolism: 'Unquestioning loyalty, self-sacrifice, the vulnerability of the working class to betrayal, and the tragedy of uneducated devotion.',
+        avatar: '🐴',
+        color: 'from-orange-500/20 to-orange-600/20 dark:from-orange-950/40 dark:to-orange-900/40 border-orange-500'
+      },
+      {
+        id: 'benjamin',
+        name: 'Benjamin',
+        species: 'Donkey',
+        allegory: 'Skeptical Intellectuals / Russian Intelligentsia',
+        role: 'The oldest and worst-tempered animal on the farm. Cynical, seldom speaks, and believes that nothing ever truly changes for the better.',
+        quote: '"Donkeys live a long time. None of you has ever seen a dead donkey."',
+        symbolism: 'Skepticism, the powerlessness of silent knowledge, survivalist apathy, and the cold awareness of political manipulation.',
+        avatar: '🫏',
+        color: 'from-slate-500/20 to-slate-600/20 dark:from-slate-950/40 dark:to-slate-900/40 border-slate-500'
+      },
+      {
+        id: 'clover',
+        name: 'Clover',
+        species: 'Mare (Horse)',
+        allegory: 'The Female Working Class & Nurturers',
+        role: 'A stout, motherly mare approaching middle life. She is deeply compassionate and acts as a protector to the smaller, weaker animals.',
+        quote: '"My sight is failing... I cannot read what is written on the wall, but it seems to me that the side of the barn looks different."',
+        symbolism: 'Empathy, quiet rebellion, memory of pure revolutionary ideals, and the painful slow realization of creeping betrayal.',
+        avatar: '🐎',
+        color: 'from-pink-500/20 to-pink-600/20 dark:from-pink-950/40 dark:to-pink-900/40 border-pink-500'
+      },
+      {
+        id: 'mr-jones',
+        name: 'Mr. Jones',
+        species: 'Human',
+        allegory: 'Tsar Nicholas II',
+        role: 'The negligent, alcoholic owner of Manor Farm. His cruelty and neglect spark the desperation that triggers the Animals\' Rebellion.',
+        quote: '"Keep those beasts quiet or they\'ll hear us from the next county over!"',
+        symbolism: 'The old regime, systemic imperialist corruption, decadent upper-class neglect, and the initial catalyst for radical social change.',
+        avatar: '👨‍🌾',
+        color: 'from-purple-500/20 to-purple-600/20 dark:from-purple-950/40 dark:to-purple-900/40 border-purple-500'
+      }
+    ];
+
+    const timelineEvents = [
+      {
+        id: 't1',
+        year: '1917',
+        historyTitle: 'Russian Revolution overthrows Tsar Nicholas II',
+        historyDesc: 'Exhausted by World War I, food shortages, and economic ruin, the citizens of Russia rise. The Romanov dynasty is toppled, and Lenin\'s Bolshevik party seizes power promising redistributive equality.',
+        allegoryTitle: 'Mr. Jones is overthrown by starving animals',
+        allegoryDesc: 'Mr. Jones neglects the animals after a drunken weekend. Starving and desperate, the animals break into the store-sheds. When the farmhands whip them, the animals counter-attack and drive them away.',
+        context: 'The spark of rebellion occurs when the ruling elite completely fails to care for the basic needs of the working masses.',
+        icon: '🔥'
+      },
+      {
+        id: 't2',
+        year: '1918-1922',
+        historyTitle: 'Russian Civil War (Reds vs. Whites)',
+        historyDesc: 'The newly formed communist state (the Red Army) faces counter-revolutionary forces (the White Army) backed by Western nations. It is a bloody struggle for survival, won decisively by the Bolsheviks.',
+        allegoryTitle: 'The Battle of the Cowshed',
+        allegoryDesc: 'Mr. Jones returns with armed allies to reclaim the farm. Under Snowball\'s pre-planned defensive tactics, the animals launch a tactical counter-strike, driving the humans back in absolute victory.',
+        context: 'The external threat forces internal consolidation, elevating military heroes and establishing defense myths.',
+        icon: '⚔️'
+      },
+      {
+        id: 't3',
+        year: '1924',
+        historyTitle: 'Lenin Dies; Trotsky & Stalin Power Struggle',
+        historyDesc: 'Lenin\'s death creates an ideological vacuum. Trotsky, a brilliant orator, wants global socialist revolution. Stalin, a quiet bureaucrat, prefers consolidating state power within Russia first.',
+        allegoryTitle: 'Old Major Dies; Napoleon & Snowball Clashes',
+        allegoryDesc: 'Old Major passes peacefully in his sleep. Snowball and Napoleon disagree on everything—especially the Windmill and whether to send out pigeons to stir up rebellion on neighboring farms.',
+        context: 'The passing of the revolution\'s founding idologue leads to an immediate conflict between strategic visionaries.',
+        icon: '💭'
+      },
+      {
+        id: 't4',
+        year: '1927',
+        historyTitle: 'Trotsky is Expelled from the Communist Party',
+        historyDesc: 'Stalin uses administrative influence to isolate Trotsky, declaring his theories anti-Soviet. Trotsky is stripped of his offices, exiled from the USSR, and eventually assassinated with an ice axe.',
+        allegoryTitle: 'Snowball is Chased off the Farm by Dogs',
+        allegoryDesc: 'During a critical vote on the Windmill, Napoleon unleashes nine ferocious, brainwashed dogs he raised in secret. They chase Snowball out of Animal Farm, never to return as a leader.',
+        context: 'The authoritarian uses weaponized military/police power to execute a sudden coup, silencing all debate.',
+        icon: '🐕'
+      },
+      {
+        id: 't5',
+        year: '1928-1932',
+        historyTitle: 'Stalin\'s Five-Year Plans & Collectivization',
+        historyDesc: 'Stalin mandates rapid industrialization and agricultural consolidation. Despite peasant resistance and catastrophic famines, Stalin demands massive infrastructure outputs.',
+        allegoryTitle: 'The Forced Construction of the Windmill',
+        allegoryDesc: 'Napoleon suddenly declares the Windmill will be built. The animals endure grueling 60-hour workweeks, and Napoleon quietly announces plans to trade with neighboring human farmers for resources.',
+        context: 'The regime adopts the exact plans of the exiled rival, renaming them as home-grown genius while starving workers.',
+        icon: '⚙️'
+      },
+      {
+        id: 't6',
+        year: '1936-1938',
+        historyTitle: 'The Great Purge & Soviet Show Trials',
+        historyDesc: 'Stalin conducts highly publicized trials of high-ranking Bolsheviks, forcing absurd confessions of treason and sabotage before execution, securing absolute compliance through terror.',
+        allegoryTitle: 'Napoleon\'s Barn Executions of "Traitors"',
+        allegoryDesc: 'Napoleon holds a public court where several pigs and hens "confess" to being secret agents of Snowball. The dogs tear their throats out instantly, leaving the remaining animals paralyzed with grief and fear.',
+        context: 'State-manufactured paranoia is used to eliminate internal dissent, turning the revolutionary state against its own citizens.',
+        icon: '🩸'
+      }
+    ];
+
+    const vocabularyData = [
+      {
+        word: 'Lurched',
+        type: 'verb',
+        definition: 'To make an abrupt, unsteady, uncontrolled movement or series of movements; to stagger.',
+        example: '"With the ring of light from his lantern dancing from side to side, he lurched across the yard."',
+        pronunciation: 'lercht'
+      },
+      {
+        word: 'Scullery',
+        type: 'noun',
+        definition: 'A small kitchen or room at the back of a house used for washing dishes and other dirty household work.',
+        example: '"He drew himself a last glass of beer from the barrel in the scullery."',
+        pronunciation: 'SKUL-er-ee'
+      },
+      {
+        word: 'Ensconced',
+        type: 'verb',
+        definition: 'To establish or settle in a comfortable, safe, or secret place.',
+        example: '"Major was already ensconced on his bed of straw, under a lantern which hung from a beam."',
+        pronunciation: 'en-SKONST'
+      },
+      {
+        word: 'Stout',
+        type: 'adjective',
+        definition: 'Rather fat or of heavy build; bulky in figure.',
+        example: '"He was twelve years old and had lately grown rather stout."',
+        pronunciation: 'stowt'
+      },
+      {
+        word: 'Majestic',
+        type: 'adjective',
+        definition: 'Having or showing impressive beauty or dignity; grand and impressive.',
+        example: '"He was still a majestic-looking pig, with a wise and benevolent appearance."',
+        pronunciation: 'muh-JES-tik'
+      },
+      {
+        word: 'Benevolent',
+        type: 'adjective',
+        definition: 'Well-meaning and kindly; showing goodwill and compassion.',
+        example: '"He was still a majestic-looking pig, with a wise and benevolent appearance."',
+        pronunciation: 'buh-NEV-uh-lent'
+      },
+      {
+        word: 'Tushes',
+        type: 'noun',
+        definition: 'A long pointed tooth, especially a canine tooth of a horse or a tusk of an animal such as a boar.',
+        example: '"He had a wise and benevolent appearance in spite of the fact that his tushes had never been cut."',
+        pronunciation: 'TUSH-iz'
+      },
+      {
+        word: 'Cynical',
+        type: 'adjective',
+        definition: 'Believing that people are motivated by self-interest; distrustful; skeptical of human sincerity or integrity.',
+        example: '"He seldom talked, and when he did, it was usually to make some cynical remark."',
+        pronunciation: 'SIN-ih-kul'
+      },
+      {
+        word: 'Devoted',
+        type: 'adjective',
+        definition: 'Having strong love or loyalty for something or someone; dedicated.',
+        example: '"Nevertheless, without openly admitting it, he was devoted to Boxer."',
+        pronunciation: 'dih-VOH-tid'
+      },
+      {
+        word: 'Paddock',
+        type: 'noun',
+        definition: 'A small field or enclosure where horses are kept or exercised.',
+        example: '"The two of them usually spent their Sundays together in the small paddock beyond the orchard."',
+        pronunciation: 'PAD-uk'
+      },
+      {
+        word: 'Nestled',
+        type: 'verb',
+        definition: 'To settle comfortably or snugly within or against something.',
+        example: '"The ducklings nestled down inside it and promptly fell asleep."',
+        pronunciation: 'NES-uld'
+      },
+      {
+        word: 'Tremendous',
+        type: 'adjective',
+        definition: 'Very great in amount, scale, or intensity; extremely large or powerful.',
+        example: '"The whole farm burst out into Beasts of England in tremendous unison."',
+        pronunciation: 'trih-MEN-dus'
+      },
+      {
+        word: 'Bleated',
+        type: 'verb',
+        definition: 'To make the characteristic wavering cry of a sheep or goat.',
+        example: '"The cows lowed it, the dogs whined it, the sheep bleated it."',
+        pronunciation: 'BLEET-id'
+      },
+      {
+        word: 'Uproar',
+        type: 'noun',
+        definition: 'A loud and impassioned noise or disturbance; a state of commotion or tumult.',
+        example: '"Unfortunately, the uproar awoke Mr. Jones, who sprang out of bed."',
+        pronunciation: 'UP-ror'
+      }
+    ];
+
+    const quizQuestions = [
+      {
+        id: 1,
+        word: 'Scullery',
+        question: 'Where does Mr. Jones draw his final glass of beer from in Chapter 1 before going to bed?',
+        options: [
+          'In the dining hall where he eats with his wife.',
+          'In the scullery, from the barrel.',
+          'In the barn next to Old Major\'s platform.',
+          'In the stable where the horses are kept.'
+        ],
+        correctAnswer: 1,
+        explanation: 'Mr. Jones draws his beer from the barrel in the scullery, which is a small kitchen or room at the back of a house used for washing dishes and other dirty household work.'
+      },
+      {
+        id: 2,
+        word: 'Ensconced',
+        question: 'How is Old Major situated on his bed of straw when the animals gather to hear his speech?',
+        options: [
+          'He is pacing back and forth anxiously.',
+          'He is trapped inside a small wooden cage.',
+          'He is comfortably ensconced under a lantern which hung from a beam.',
+          'He is hiding in the paddock behind the barn.'
+        ],
+        correctAnswer: 2,
+        explanation: '"Ensconced" means to establish or settle in a comfortable, safe, or secret place. Old Major was established on his bed of straw, ready to present his address.'
+      },
+      {
+        id: 3,
+        word: 'Cynical',
+        question: 'Benjamin the donkey has a "cynical" outlook. What does his cynicism imply about his attitude toward the rebellion?',
+        options: [
+          'He believes the revolution will bring a flawless, peaceful utopia.',
+          'He is deeply distrustful and skeptical, believing that life will remain harsh regardless of who is in charge.',
+          'He is eager to follow Napoleon\'s commands unquestioningly.',
+          'He is frightened of the other farm animals and seeks to hide in the scullery.'
+        ],
+        correctAnswer: 1,
+        explanation: '"Cynical" refers to believing that creatures are motivated by self-interest; it represents a skeptical attitude. Benjamin does not believe the rebellion will change the fundamental nature of their harsh lives.'
+      },
+      {
+        id: 4,
+        word: 'Tremendous',
+        question: 'When the animals sing "Beasts of England" in Chapter 1, they sing in "tremendous" unison. What does this reveal about their state of mind?',
+        options: [
+          'They are frightened by the loud commotion and want to go to sleep.',
+          'They are completely divided and singing completely different tunes.',
+          'They feel an extremely powerful, intense, and collective surge of hope and unity.',
+          'They are trying to trick Mr. Jones into thinking everything is quiet.'
+        ],
+        correctAnswer: 2,
+        explanation: '"Tremendous" means very great in amount, scale, or intensity. Singing in tremendous unison shows how deeply they are moved and united by the song of rebellion.'
+      },
+      {
+        id: 5,
+        word: 'Devoted',
+        question: 'Despite his cynical and silent outer demeanor, Benjamin is silently "devoted" to Boxer. What does this mean?',
+        options: [
+          'He hates Boxer\'s work ethic and refuses to talk to him.',
+          'He has a strong sense of loyalty, love, and quiet dedication to Boxer.',
+          'He wants to convince Boxer to leave Manor Farm.',
+          'He thinks Boxer is too lazy and should work harder.'
+        ],
+        correctAnswer: 1,
+        explanation: '"Devoted" means having strong love or loyalty for something or someone; dedicated. Although Benjamin does not openly admit it, his quiet actions show his absolute dedication to Boxer.'
+      }
+    ];
+
+    function lessonApp() {
+      return {
+        // App State
+        isDarkMode: false,
+        activeTab: 'overview',
+        viewedBiographies: { orwell: false, history: false },
+        viewedCharacters: [],
+        revealedTimelineEvents: [],
+        vocabIndex: 0,
+        isCardFlipped: false,
+        quizAnswers: {},
+        quizSubmitted: false,
+        quizScore: 0,
+        homeworkAnswers: { q1: '', q2: '' },
+        aiFeedback: null,
+        isGeneratingFeedback: false,
+        isCopied: false,
+
+        // Tab Data & custom SVG icons
+        tabs: [
+          { id: 'overview', label: 'Biography & History', icon: `<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>` },
+          { id: 'characters', label: 'Character Codex', icon: `<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" /></svg>` },
+          { id: 'timeline', label: 'History Parallel Map', icon: `<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>` },
+          { id: 'themes', label: 'Themes & Satire', icon: `<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h10a2 2 0 012 2v2M7 7h10" /></svg>` },
+          { id: 'vocabulary', label: 'Vocab Flashcards', icon: `<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15.536 8.464a5 5 0 010 7.072M18.364 5.636a9 9 0 010 12.728M12 18.75V5.25L7.75 9H4.5v6h3.25L12 18.75z" /></svg>` },
+          { id: 'homework', label: 'Homework Draft Studio', icon: `<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>` }
+        ],
+
+        // Read character profiles list mapping
+        characterData: characterData,
+        timelineEvents: timelineEvents,
+        vocabularyData: vocabularyData,
+        quizQuestions: quizQuestions,
+
+        // Core Actions
+        toggleTheme() {
+          this.isDarkMode = !this.isDarkMode;
+          const htmlClass = document.documentElement.classList;
+          if (this.isDarkMode) {
+            htmlClass.add('dark');
+          } else {
+            htmlClass.remove('dark');
+          }
+        },
+
+        toggleCharacter(id) {
+          if (!this.viewedCharacters.includes(id)) {
+            this.viewedCharacters.push(id);
+          }
+        },
+
+        toggleTimelineEvent(id) {
+          if (!this.revealedTimelineEvents.includes(id)) {
+            this.revealedTimelineEvents.push(id);
+          }
+        },
+
+        getExploredCharacters() {
+          return this.characterData.filter(c => this.viewedCharacters.includes(c.id));
+        },
+
+        // Dynamic progress computation property
+        get progressPercent() {
+          let score = 0;
+          let totalItems = 10;
+
+          if (this.viewedBiographies.orwell) score += 1;
+          if (this.viewedBiographies.history) score += 1;
+          
+          if (this.viewedCharacters.length >= 4) score += 2;
+          else if (this.viewedCharacters.length > 0) score += 1;
+
+          if (this.revealedTimelineEvents.length >= 6) score += 2;
+          else if (this.revealedTimelineEvents.length > 0) score += 1;
+
+          if (this.quizSubmitted) score += 2;
+
+          if (this.homeworkAnswers.q1.trim().length > 20) score += 1;
+          if (this.homeworkAnswers.q2.trim().length > 20) score += 1;
+
+          return Math.round((score / totalItems) * 100);
+        },
+
+        // Text-to-speech engine using Web Speech API
+        speakWord(word) {
+          if ('speechSynthesis' in window) {
+            window.speechSynthesis.cancel();
+            const utterance = new SpeechSynthesisUtterance(word);
+            utterance.lang = 'en-US';
+            utterance.rate = 0.85;
+            window.speechSynthesis.speak(utterance);
+          }
+        },
+
+        // Challenge quiz helper rules
+        submitQuiz() {
+          let count = 0;
+          this.quizQuestions.forEach(q => {
+            if (this.quizAnswers[q.id] === q.correctAnswer) {
+              count += 1;
+            }
+          });
+          this.quizScore = count;
+          this.quizSubmitted = true;
+        },
+
+        resetQuiz() {
+          this.quizAnswers = {};
+          this.quizSubmitted = false;
+          this.quizScore = 0;
+        },
+
+        getQuizButtonStyle(qId, optIdx) {
+          const isSelected = this.quizAnswers[qId] === optIdx;
+          const correctAnswer = this.quizQuestions.find(q => q.id === qId).correctAnswer;
+          
+          if (this.quizSubmitted) {
+            if (optIdx === correctAnswer) {
+              return 'bg-emerald-500/25 border-emerald-600 text-emerald-700 dark:text-emerald-300 font-bold';
+            } else if (isSelected && this.quizAnswers[qId] !== correctAnswer) {
+              return 'bg-red-500/15 border-red-600 text-red-700 dark:text-red-400 line-through';
+            }
+          }
+          
+          if (isSelected) {
+            return 'bg-emerald-500/10 border-emerald-500 text-emerald-600 dark:text-emerald-400';
+          }
+
+          return this.isDarkMode 
+            ? 'bg-zinc-950/40 border-zinc-800 text-zinc-300 hover:bg-zinc-800/40' 
+            : 'bg-stone-50 border-stone-200 text-stone-700 hover:bg-stone-100';
+        },
+
+        // Homework Actions
+        getAIFeedback() {
+          if (!this.homeworkAnswers.q1.trim() && !this.homeworkAnswers.q2.trim()) {
+            alert("Please draft answers to the reflection questions first before requesting feedback!");
+            return;
+          }
+          this.isGeneratingFeedback = true;
+          setTimeout(() => {
+            this.isGeneratingFeedback = false;
+            this.aiFeedback = {
+              q1Feedback: this.homeworkAnswers.q1.trim().length > 50 
+                ? "💡 Great work pointing out Old Major's structure. To elevate your answer, explicitly name his rhetorical appeals: Ethos (his advanced age, wise and benevolent character), Logos (using clear ratios of work and production), and Pathos (his emotional plea regarding slaughter and the song 'Beasts of England')." 
+                : "⚠️ This draft is a bit short. Try expanding on the specific rhetorical devices Old Major utilizes. Mention how he appeals to common brotherhood with terms like 'Comrades' and creates a shared enemy (Man).",
+              q2Feedback: this.homeworkAnswers.q2.trim().length > 50
+                ? "💡 Excellent thematic connection! You accurately analyzed 'Beasts of England' as an idealistic national anthem. Consider analyzing the specific lyrics: the references to 'golden future time' or 'cruel whips no more shall crack' to show how it offers a concrete vision of liberation."
+                : "⚠️ Try adding quotes or symbols from the song. Analyze how singing it together fosters a powerful collective identity and acts as a psychological tool to break through fear.",
+              generalRating: "Proficient Draft",
+              tip: "Incorporate 1-2 direct citations from Chapter 1 to unlock maximum grading potential!"
+            };
+          }, 1200);
+        },
+
+        exportHomework() {
+          const fileContent = `=========================================
+ANIMAL FARM: LESSON 1 HOMEWORK SUBMISSION
+=========================================
+Student Draft - SetSail Novel Course
+
+PART 1: REFLECTION QUESTIONS
+
+Question 1: What makes Old Major an effective speaker in Chapter 1? Cite specific examples from his speech.
+----------------------------------------------------------------------
+Your Answer:
+${this.homeworkAnswers.q1 || "(No answer drafted)"}
+
+Question 2: What does the song "Beasts of England" reveal about the animals' hopes and dreams for the future?
+----------------------------------------------------------------------
+Your Answer:
+${this.homeworkAnswers.q2 || "(No answer drafted)"}
+
+----------------------------------------------------------------------
+Lesson Progress Reached: ${this.progressPercent}% Completed
+Vocabulary Quiz Score: ${this.quizSubmitted ? `${this.quizScore}/5` : "Not taken yet"}
+Generated on: ${new Date().toLocaleDateString()}
+`;
+
+          const element = document.createElement("a");
+          const file = new Blob([fileContent], { type: 'text/plain' });
+          element.href = URL.createObjectURL(file);
+          element.download = "AnimalFarm_Lesson1_Homework.txt";
+          document.body.appendChild(element);
+          element.click();
+          document.body.removeChild(element);
+        },
+
+        copyHomework() {
+          const text = `Q1 Draft:\n${this.homeworkAnswers.q1}\n\nQ2 Draft:\n${this.homeworkAnswers.q2}`;
+          const textArea = document.createElement("textarea");
+          textArea.value = text;
+          document.body.appendChild(textArea);
+          textArea.select();
+          try {
+            document.execCommand('copy');
+            this.isCopied = true;
+            setTimeout(() => this.isCopied = false, 2000);
+          } catch (err) {
+            console.error('Fallback copy failed', err);
+          }
+          document.body.removeChild(textArea);
+        }
+      };
+    }
+  </script>
+
+  <!-- Alpine.js CDN (with defer) -->
+  <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+</head>
+<body class="h-full">
+
+  <div 
+    x-data="lessonApp()" 
+    :class="isDarkMode ? 'dark bg-zinc-950 text-zinc-100' : 'bg-stone-50 text-stone-950'" 
+    class="min-h-screen font-sans transition-colors duration-300 flex flex-col justify-between"
+  >
+    
+    <!-- ==========================================
+        HEADER SECTION
+        ========================================== -->
+    <header class="border-b sticky top-0 z-50 transition-colors backdrop-blur-md h-16 bg-white/95 dark:bg-zinc-900/90 border-stone-200 dark:border-zinc-800">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-full flex items-center justify-between">
+        <div class="flex items-center space-x-3">
+          <!-- BookOpen SVG -->
+          <div class="bg-emerald-600 dark:bg-emerald-700 p-2 rounded-lg text-white shadow-md">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+            </svg>
+          </div>
+          <div>
+            <span class="text-xs uppercase tracking-widest font-bold text-emerald-600 dark:text-emerald-400">SetSail Novel Course</span>
+            <h1 class="text-lg sm:text-xl font-extrabold tracking-tight">Animal Farm Core Hub</h1>
+          </div>
+        </div>
+
+        <div class="flex items-center space-x-4">
+          <!-- Dynamic Progress Indicator -->
+          <div class="hidden sm:flex items-center space-x-2 text-xs">
+            <span class="font-semibold text-stone-500 dark:text-zinc-400">Lesson Progress:</span>
+            <div class="w-24 bg-stone-200 dark:bg-zinc-800 rounded-full h-2.5 overflow-hidden">
+              <div 
+                class="bg-emerald-600 dark:bg-emerald-500 h-2.5 rounded-full transition-all duration-500 ease-out" 
+                :style="`width: ${progressPercent}%`"
+              ></div>
+            </div>
+            <span class="font-bold text-emerald-600 dark:text-emerald-400" x-text="`${progressPercent}%`"></span>
+          </div>
+
+          <!-- Dark Mode Toggle -->
+          <button
+            @click="toggleTheme()"
+            class="p-2.5 rounded-xl border transition-all bg-stone-100 border-stone-200 text-stone-600 hover:bg-stone-200 dark:bg-zinc-800 dark:border-zinc-700 dark:text-amber-400 dark:hover:bg-zinc-700"
+            title="Toggle Theme"
+            aria-label="Toggle dark mode"
+          >
+            <!-- Sun icon when dark, Moon when light -->
+            <template x-if="isDarkMode">
+              <svg class="w-[18px] h-[18px]" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m12.728 0l-.707-.707M6.343 6.343l-.707-.707M12 7a5 5 0 100 10 5 5 0 000-10z" />
+              </svg>
+            </template>
+            <template x-if="!isDarkMode">
+              <svg class="w-[18px] h-[18px]" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+              </svg>
+            </template>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Welcome Hero Unit -->
+    <section class="bg-gradient-to-r from-emerald-900 via-emerald-800 to-teal-950 text-white py-10 px-4 sm:px-6 lg:px-8 shadow-inner relative overflow-hidden">
+      <div class="absolute right-0 bottom-0 opacity-10 transform translate-x-12 translate-y-12 select-none pointer-events-none">
+        <span class="text-[200px] font-extrabold">1945</span>
+      </div>
+      
+      <div class="max-w-7xl mx-auto flex flex-col md:flex-row md:items-center md:justify-between relative z-10 gap-6">
+        <div class="space-y-3 max-w-3xl">
+          <div class="inline-flex items-center space-x-2 bg-emerald-500/20 text-emerald-300 px-3 py-1 rounded-full text-xs font-semibold border border-emerald-500/30">
+            <svg class="w-3.5 h-3.5 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
+            </svg>
+            <span>SetSail Novel Course — Lesson 1 Introduction</span>
+          </div>
+          <h2 class="text-3xl sm:text-4xl font-black tracking-tight leading-none">
+            Understanding George Orwell's Political Allegory
+          </h2>
+          <p class="text-emerald-100/90 text-sm sm:text-base leading-relaxed">
+            Welcome to the foundation of your <span class="font-semibold underline decoration-amber-500">Animal Farm</span> journey. Before we analyze the chapters, we must decipher the historical stage: the rise of totalitarianism, Soviet allegory, and the powerful literary mechanisms of satire and fables.
+          </p>
+        </div>
+
+        <div class="bg-emerald-950/60 backdrop-blur border border-emerald-500/30 p-5 rounded-2xl md:w-80 shadow-lg shrink-0">
+          <h3 class="text-xs uppercase tracking-wider font-bold text-emerald-300 flex items-center gap-1.5 mb-3">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg> 
+            <span>Lesson Objectives Checklist</span>
+          </h3>
+          <ul class="space-y-2 text-xs text-emerald-100">
+            <li class="flex items-start gap-2">
+              <input 
+                type="checkbox" 
+                :checked="viewedBiographies.orwell && viewedBiographies.history" 
+                disabled
+                class="mt-0.5 rounded border-emerald-500/50 text-emerald-600 bg-transparent"
+              />
+              <span>Map Orwell's life & historical inspirations</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <input 
+                type="checkbox" 
+                :checked="viewedCharacters.length >= 4" 
+                disabled
+                class="mt-0.5 rounded border-emerald-500/50 text-emerald-600 bg-transparent"
+              />
+              <span x-text="`Identify key allegorical characters (${viewedCharacters.length}/4)`"></span>
+            </li>
+            <li class="flex items-start gap-2">
+              <input 
+                type="checkbox" 
+                :checked="revealedTimelineEvents.length >= 4" 
+                disabled
+                class="mt-0.5 rounded border-emerald-500/50 text-emerald-600 bg-transparent"
+              />
+              <span>Correlate novel events with Russian history</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <input 
+                type="checkbox" 
+                :checked="quizSubmitted && quizScore >= 4" 
+                disabled
+                class="mt-0.5 rounded border-emerald-500/50 text-emerald-600 bg-transparent"
+              />
+              <span>Master Ch. 1 Vocabulary (Score 4+/5)</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================
+        STICKY TAB NAVIGATION
+        ========================================== -->
+    <nav class="border-b transition-colors sticky top-[64px] z-40 backdrop-blur-md shadow-sm bg-stone-100/95 border-stone-200 dark:bg-zinc-900/95 dark:border-zinc-800">
+      <div class="max-w-7xl mx-auto px-4 overflow-x-auto scrollbar-none">
+        <div class="flex space-x-1 sm:space-x-4 py-3 min-w-max">
+          <template x-for="tab in tabs" :key="tab.id">
+            <button
+              @click="activeTab = tab.id"
+              :class="activeTab === tab.id 
+                ? 'bg-emerald-600 text-white shadow-md' 
+                : 'text-stone-600 hover:bg-stone-200 hover:text-stone-900 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-zinc-200'"
+              class="flex items-center space-x-2 px-4 py-2.5 rounded-xl font-semibold text-xs sm:text-sm transition-all duration-200 cursor-pointer"
+            >
+              <!-- Icon Injection -->
+              <span x-html="tab.icon"></span>
+              <span x-text="tab.label"></span>
+            </button>
+          </template>
+        </div>
+      </div>
+    </nav>
+
+    <!-- ==========================================
+        MAIN CONTENT CONTAINER
+        ========================================== -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-grow w-full">
+      
+      <!-- TAB 1: OVERVIEW & GEORGE ORWELL BIOGRAPHY -->
+      <div x-show="activeTab === 'overview'" class="space-y-8 animate-fadeIn">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          
+          <!-- ORWELL PROFILE -->
+          <div 
+            class="p-6 rounded-2xl border transition-all bg-white border-stone-200 shadow-sm hover:shadow-md dark:bg-zinc-900 dark:border-zinc-800"
+            @click="viewedBiographies.orwell = true"
+          >
+            <div class="flex items-center justify-between mb-4">
+              <div class="flex items-center space-x-3">
+                <div class="bg-emerald-100 dark:bg-emerald-950 p-2.5 rounded-xl text-emerald-600 dark:text-emerald-400">
+                  <svg class="w-5.5 h-5.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                  </svg>
+                </div>
+                <h3 class="text-xl font-bold">George Orwell (1903–1950)</h3>
+              </div>
+              <span class="text-xs font-bold text-amber-500 uppercase tracking-widest flex items-center gap-1">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" />
+                </svg> The Author
+              </span>
+            </div>
+
+            <div class="space-y-4 text-sm leading-relaxed text-stone-600 dark:text-zinc-300">
+              <p>
+                Born in Motihari, Bengal (British India) as <strong>Eric Arthur Blair</strong>, Orwell was educated at Eton College in England. His lifetime spans the most volatile geopolitical eras of the modern world, making him a central chronicler of our collective anxieties.
+              </p>
+              
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
+                <div class="p-3.5 rounded-xl bg-stone-50 border border-stone-200 dark:bg-zinc-800/50 dark:border-zinc-800">
+                  <span class="block font-bold text-xs text-stone-400 dark:text-zinc-500 uppercase">Imperial Officer</span>
+                  Served in the Indian Imperial Police in Burma, igniting a deep, burning opposition to class tyranny and imperialism.
+                </div>
+                <div class="p-3.5 rounded-xl bg-stone-50 border border-stone-200 dark:bg-zinc-800/50 dark:border-zinc-800">
+                  <span class="block font-bold text-xs text-stone-400 dark:text-zinc-500 uppercase">Anti-Fascist Veteran</span>
+                  Traveled to fight in the Spanish Civil War. Witnessed Communist factions slaughtering Trotskyist allies under Soviet instructions.
+                </div>
+              </div>
+
+              <p class="mt-2">
+                This traumatic betrayal in Spain convinced Orwell that totalitarianism on the Left was just as dangerous as fascism on the Right. He dedicated his life to prose characterized by absolute clarity, ensuring that complex political manipulations could be seen easily by working-class readers.
+              </p>
+            </div>
+
+            <div class="mt-6 pt-4 border-t border-stone-150 dark:border-zinc-800 flex flex-wrap items-center justify-between gap-3 text-xs">
+              <div class="flex items-center space-x-2">
+                <span class="font-semibold text-stone-400 dark:text-zinc-500">Sources & Research:</span>
+                <a 
+                  href="https://www.orwellfoundation.com/" 
+                  target="_blank" 
+                  rel="noopener noreferrer" 
+                  class="text-emerald-600 dark:text-emerald-400 font-bold hover:underline flex items-center gap-0.5"
+                >
+                  Orwell Foundation <svg class="w-3 h-3 inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
+                </a>
+              </div>
+              <button 
+                @click.stop="viewedBiographies.orwell = true"
+                :class="viewedBiographies.orwell ? 'bg-emerald-200 dark:bg-emerald-900 text-emerald-800 dark:text-emerald-300' : 'bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300 hover:bg-emerald-200 dark:hover:bg-emerald-900'"
+                class="px-3 py-1.5 rounded-lg font-bold transition-all cursor-pointer"
+                x-text="viewedBiographies.orwell ? '✓ Verified Read' : 'Mark as Read'"
+              ></button>
+            </div>
+          </div>
+
+          <!-- HISTORICAL BACKGROUND -->
+          <div 
+            class="p-6 rounded-2xl border transition-all bg-white border-stone-200 shadow-sm hover:shadow-md dark:bg-zinc-900 dark:border-zinc-800"
+            @click="viewedBiographies.history = true"
+          >
+            <div class="flex items-center justify-between mb-4">
+              <div class="flex items-center space-x-3">
+                <div class="bg-amber-100 dark:bg-amber-950/50 p-2.5 rounded-xl text-amber-600 dark:text-amber-400">
+                  <svg class="w-5.5 h-5.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                </div>
+                <h3 class="text-xl font-bold">The Russian Catalyst</h3>
+              </div>
+              <span class="text-xs font-bold text-red-500 uppercase tracking-widest flex items-center gap-1">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" />
+                </svg> The Inspiration
+              </span>
+            </div>
+
+            <div class="space-y-4 text-sm leading-relaxed text-stone-600 dark:text-zinc-300">
+              <p>
+                Published in <strong>August 1945</strong>, as World War II drew to a close, <em>Animal Farm</em> serves as a precise structural parody of the <strong>Russian Revolution of 1917</strong> and the subsequent dictatorial rule of Joseph Stalin.
+              </p>
+
+              <ul class="space-y-2 text-stone-600 dark:text-zinc-350 bg-stone-50 p-3 rounded-xl border border-stone-150 dark:bg-zinc-800/30 dark:border-zinc-850">
+                <li class="flex items-start gap-2">
+                  <span class="text-red-500 font-black mt-0.5">✦</span>
+                  <span><strong>The Betrayed Ideal:</strong> Orwell championed pure socialism—workers owning the fruits of their labor. The novel critiques the process by which a promising, egalitarian revolution can descend into extreme tyranny.</span>
+                </li>
+                <li class="flex items-start gap-2">
+                  <span class="text-red-500 font-black mt-0.5">✦</span>
+                  <span><strong>Totalitarian Control:</strong> Dictator Joseph Stalin led the USSR via psychological terror, propaganda networks (Pravda), rapid industrialization plans (Five-Year Plans), and state executions (The Purges).</span>
+                </li>
+              </ul>
+
+              <p>
+                Orwell finished drafting the novel in early 1944. It was famously rejected by multiple British publishers who feared it would disrupt the wartime alliance with Stalin against Nazi Germany. Despite this friction, it quickly became an global classic of political subversion.
+              </p>
+            </div>
+
+            <div class="mt-6 pt-4 border-t border-stone-150 dark:border-zinc-800 flex flex-wrap items-center justify-between gap-3 text-xs">
+              <div class="flex items-center space-x-2">
+                <span class="font-semibold text-stone-400 dark:text-zinc-500">Suggested Reference:</span>
+                <a 
+                  href="https://www.history.com/topics/russia/russian-revolution" 
+                  target="_blank" 
+                  rel="noopener noreferrer" 
+                  class="text-amber-600 dark:text-amber-400 font-bold hover:underline flex items-center gap-0.5"
+                >
+                  History.com Revolution Overview <svg class="w-3 h-3 inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
+                </a>
+              </div>
+              <button 
+                @click.stop="viewedBiographies.history = true"
+                :class="viewedBiographies.history ? 'bg-amber-200 dark:bg-amber-900 text-amber-800 dark:text-amber-300' : 'bg-amber-100 dark:bg-amber-950 text-amber-750 dark:text-amber-300 hover:bg-amber-200 dark:hover:bg-amber-900'"
+                class="px-3 py-1.5 rounded-lg font-bold transition-all cursor-pointer"
+                x-text="viewedBiographies.history ? '✓ Verified Read' : 'Mark as Read'"
+              ></button>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- QUICK PARALLEL CHART SUMMARY -->
+        <div class="p-6 rounded-2xl bg-emerald-950 text-white space-y-4">
+          <h3 class="text-lg font-bold flex items-center gap-2 text-emerald-300">
+            <svg class="w-5 h-5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg> Essential Analytical Takeaway
+          </h3>
+          <p class="text-sm text-emerald-100 leading-relaxed">
+            As a student reading Chapter 1, you should constantly look beyond the animal avatars. Try to notice that Orwell is building a <strong>double-narrative</strong>. When Old Major is speaking, he represents both the philosophical idealism of Karl Marx and the physical revolutionary spirit of Vladimir Lenin. Your reading objective is to examine how these high, noble ideals are structurally corrupted by absolute power.
+          </p>
+        </div>
+      </div>
+
+      <!-- TAB 2: CHARACTER CODEX -->
+      <div x-show="activeTab === 'characters'" class="space-y-6 animate-fadeIn">
+        <div class="text-center max-w-2xl mx-auto space-y-2">
+          <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight">The Character Codex</h2>
+          <p class="text-sm text-stone-500 dark:text-zinc-400">
+            Click on the character profiles to reveal their allegorical significance, thematic concepts, and famous book citations. Trace how their animal traits match their political equivalents.
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <template x-for="char in characterData" :key="char.id">
+            <div
+              @click="toggleCharacter(char.id)"
+              :class="`p-5 rounded-2xl border bg-gradient-to-br ${char.color} border-l-4 hover:scale-[1.02] active:scale-[0.98] transition-all cursor-pointer flex flex-col justify-between relative overflow-hidden`"
+            >
+              <template x-if="viewedCharacters.includes(char.id)">
+                <span class="absolute top-2 right-2 text-[10px] uppercase tracking-wider font-extrabold bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 px-2 py-0.5 rounded-md">
+                  Explored
+                </span>
+              </template>
+
+              <div class="space-y-3">
+                <div class="flex items-center space-x-3">
+                  <span class="text-3xl bg-white/40 dark:bg-black/30 p-2 rounded-xl" x-text="char.avatar"></span>
+                  <div>
+                    <h4 class="font-extrabold text-base" x-text="char.name"></h4>
+                    <span class="text-xs uppercase font-semibold text-stone-500 dark:text-zinc-400 tracking-wider block" x-text="char.species"></span>
+                  </div>
+                </div>
+
+                <div class="pt-2 border-t border-black/5 dark:border-white/5 space-y-2">
+                  <div>
+                    <span class="text-[10px] font-bold uppercase text-stone-400 dark:text-zinc-500 block">Allegory Match</span>
+                    <span class="text-xs font-black text-red-600 dark:text-red-400 block" x-text="char.allegory"></span>
+                  </div>
+                  <p class="text-xs text-stone-600 dark:text-zinc-300 leading-relaxed line-clamp-4" x-text="char.role"></p>
+                </div>
+              </div>
+
+              <div class="mt-4 pt-3 border-t border-black/5 dark:border-white/5 bg-black/5 dark:bg-black/20 p-2.5 rounded-xl space-y-1">
+                <span class="text-[10px] font-bold uppercase text-amber-600 dark:text-amber-400 block">Thematic Quote</span>
+                <p class="text-[11px] italic text-stone-500 dark:text-zinc-400 line-clamp-3 leading-snug" x-text="char.quote"></p>
+              </div>
+            </div>
+          </template>
+        </div>
+
+        <!-- EXPANDED ANALYSIS SECTION -->
+        <template x-if="viewedCharacters.length > 0">
+          <div class="p-6 rounded-2xl border mt-8 bg-white border-stone-200 dark:bg-zinc-900 dark:border-zinc-800">
+            <h3 class="text-sm font-bold uppercase text-stone-400 dark:text-zinc-500 mb-4 flex items-center gap-1.5">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg> Detailed Structural Allegory
+            </h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <template x-for="char in getExploredCharacters()" :key="`expanded-${char.id}`">
+                <div class="p-4 rounded-xl border border-stone-150 dark:border-zinc-800 space-y-2">
+                  <div class="flex items-center space-x-2">
+                    <span class="text-xl" x-text="char.avatar"></span>
+                    <h4 class="font-bold text-sm" x-text="`${char.name} Analysis`"></h4>
+                  </div>
+                  <p class="text-xs text-stone-600 dark:text-zinc-355 leading-relaxed">
+                    <strong>Symbolism in depth:</strong> <span x-text="char.symbolism"></span>
+                  </p>
+                </div>
+              </template>
+            </div>
+          </div>
+        </template>
+      </div>
+
+      <!-- TAB 3: HISTORY PARALLEL MAP -->
+      <div x-show="activeTab === 'timeline'" class="space-y-6 animate-fadeIn">
+        <div class="text-center max-w-2xl mx-auto space-y-2">
+          <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight">The History-Allegory Bridge</h2>
+          <p class="text-sm text-stone-500 dark:text-zinc-400">
+            Discover the direct equivalents between events in Russia and the plot movements in Animal Farm. Click each card to reveal the satirical link.
+          </p>
+        </div>
+
+        <div class="space-y-6">
+          <template x-for="item in timelineEvents" :key="item.id">
+            <div
+              @click="toggleTimelineEvent(item.id)"
+              :class="revealedTimelineEvents.includes(item.id) 
+                ? 'bg-zinc-900 text-white border-emerald-600' 
+                : 'bg-white border-stone-200 text-stone-800 shadow-sm hover:shadow-md dark:bg-zinc-900 dark:border-zinc-800 dark:text-zinc-400 dark:hover:bg-zinc-800/80'"
+              class="p-6 rounded-2xl border transition-all duration-300 relative cursor-pointer"
+            >
+              <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <!-- Left: Year & Russian History -->
+                <div class="md:w-1/2 space-y-2">
+                  <div class="flex items-center space-x-3">
+                    <span class="text-2xl bg-emerald-500/20 p-2 rounded-xl text-emerald-400" x-text="item.icon"></span>
+                    <div>
+                      <span class="text-xs font-extrabold text-amber-500 tracking-wider" x-text="`YEAR ${item.year}`"></span>
+                      <h4 class="font-extrabold text-base md:text-lg" x-text="item.historyTitle"></h4>
+                    </div>
+                  </div>
+                  <p class="text-xs md:text-sm text-stone-500 dark:text-zinc-350 leading-relaxed" x-text="item.historyDesc"></p>
+                </div>
+
+                <!-- Middle Break Line -->
+                <div class="hidden md:flex flex-col items-center justify-center py-2 px-1">
+                  <div class="w-0.5 h-16 bg-dashed border-l border-stone-300 dark:border-zinc-700"></div>
+                  <span class="text-[10px] uppercase tracking-widest font-bold text-stone-400 my-1">Satirical Parody</span>
+                  <div class="w-0.5 h-16 bg-dashed border-l border-stone-300 dark:border-zinc-700"></div>
+                </div>
+
+                <!-- Right: Animal Farm equivalent -->
+                <div class="md:w-1/2 p-4 rounded-xl bg-stone-50 border border-stone-150 dark:bg-zinc-950/60 dark:border-zinc-900 flex flex-col justify-center min-h-[120px]">
+                  <template x-if="!revealedTimelineEvents.includes(item.id)">
+                    <div class="text-center py-4 space-y-2">
+                      <span class="block text-xs font-bold text-emerald-600 dark:text-emerald-400 animate-pulse">
+                        🔍 Click to reveal Animal Farm correlation
+                      </span>
+                      <p class="text-[11px] text-stone-400">
+                        Discover Orwell's parallel representation
+                      </p>
+                    </div>
+                  </template>
+                  
+                  <template x-if="revealedTimelineEvents.includes(item.id)">
+                    <div class="space-y-2 animate-fadeIn">
+                      <span class="text-[10px] font-extrabold uppercase text-amber-500 tracking-widest block">
+                        Allegory Match
+                      </span>
+                      <h5 class="font-extrabold text-sm text-emerald-600 dark:text-emerald-400" x-text="item.allegoryTitle"></h5>
+                      <p class="text-xs text-stone-600 dark:text-zinc-355 leading-relaxed" x-text="item.allegoryDesc"></p>
+                      <p class="text-[11px] font-semibold italic text-stone-400 dark:text-zinc-500 border-t border-black/5 dark:border-white/5 pt-1.5 mt-1">
+                        <strong>Concept:</strong> <span x-text="item.context"></span>
+                      </p>
+                    </div>
+                  </template>
+                </div>
+              </div>
+            </div>
+          </template>
+        </div>
+      </div>
+
+      <!-- TAB 4: THEMES & SATIRE -->
+      <div x-show="activeTab === 'themes'" class="space-y-8 animate-fadeIn">
+        <div class="text-center max-w-2xl mx-auto space-y-2">
+          <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight">Literary Framework & Themes</h2>
+          <p class="text-sm text-stone-500 dark:text-zinc-400">
+            Analyze the distinct literary mechanisms Orwell combined to write his powerful social critique.
+          </p>
+        </div>
+
+        <!-- LITERARY DEVICES CARD BLOCK -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          
+          <div class="p-5 rounded-2xl border bg-white border-stone-200 dark:bg-zinc-900 dark:border-zinc-800">
+            <div class="flex items-center space-x-3 mb-3">
+              <span class="text-2xl bg-indigo-500/10 p-2 rounded-xl text-indigo-500">🎭</span>
+              <h3 class="font-extrabold text-base">Political Allegory</h3>
+            </div>
+            <p class="text-xs sm:text-sm text-stone-600 dark:text-zinc-355 leading-relaxed">
+              A work in which characters, events, and settings stand for distinct political figures and historical eras. <em>Animal Farm</em> is designed to work simultaneously as a simple story about mistreated farm animals and a meticulous mapping of Soviet power struggles.
+            </p>
+          </div>
+
+          <div class="p-5 rounded-2xl border bg-white border-stone-200 dark:bg-zinc-900 dark:border-zinc-800">
+            <div class="flex items-center space-x-3 mb-3">
+              <span class="text-2xl bg-amber-500/10 p-2 rounded-xl text-amber-500">⚖️</span>
+              <h3 class="font-extrabold text-base">Socialist Satire</h3>
+            </div>
+            <p class="text-xs sm:text-sm text-stone-600 dark:text-zinc-355 leading-relaxed">
+              The use of humor, irony, exaggeration, or ridicule to expose and criticize human folly, vice, and hypocrisy. Orwell satyrizes how revolutionary leaders quietly slip back into the exact corrupt behaviors of the rulers they overthrew.
+            </p>
+          </div>
+
+          <div class="p-5 rounded-2xl border bg-white border-stone-200 dark:bg-zinc-900 dark:border-zinc-800">
+            <div class="flex items-center space-x-3 mb-3">
+              <span class="text-2xl bg-red-500/10 p-2 rounded-xl text-red-500">📖</span>
+              <h3 class="font-extrabold text-base">Fable & Beast Fable</h3>
+            </div>
+            <p class="text-xs sm:text-sm text-stone-600 dark:text-zinc-355 leading-relaxed">
+              Historically, fables utilize talking animals to deliver a straightforward moral lesson. Orwell brilliantly co-opts this simple style to examine complex, highly dark adult topics: psychological manipulation, violence, and systematic social engineering.
+            </p>
+          </div>
+
+        </div>
+
+        <!-- SYMBOLISM DECODED ACCORDION -->
+        <div class="p-6 rounded-2xl border bg-white border-stone-200 shadow-sm dark:bg-zinc-900 dark:border-zinc-800">
+          <h3 class="text-lg font-bold mb-4 flex items-center gap-2">
+            <svg class="w-5 h-5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" />
+            </svg> Major Chapter 1 Symbols Decoded
+          </h3>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            
+            <div class="p-4 rounded-xl bg-stone-50 border border-stone-150 dark:bg-zinc-950/40 dark:border-zinc-850 space-y-1">
+              <h4 class="font-bold text-sm text-emerald-600 dark:text-emerald-400">1. Manor Farm / Animal Farm</h4>
+              <p class="text-xs text-stone-500 dark:text-zinc-355 leading-relaxed">
+                Represents Russia (under Tsar Nicholas II) and the later Soviet Union. The farm's physical isolation reflects the isolationist policies of the Communist state amidst capitalist nations.
+              </p>
+            </div>
+
+            <div class="p-4 rounded-xl bg-stone-50 border border-stone-150 dark:bg-zinc-950/40 dark:border-zinc-855 space-y-1">
+              <h4 class="font-bold text-sm text-emerald-600 dark:text-emerald-400">2. The Song "Beasts of England"</h4>
+              <p class="text-xs text-stone-500 dark:text-zinc-355 leading-relaxed">
+                Parodies the famous communist anthem <em>L'Internationale</em>. It provides the animals with shared hope, collective identity, and immediate psychological escape from suffering.
+              </p>
+            </div>
+
+            <div class="p-4 rounded-xl bg-stone-50 border border-stone-150 dark:bg-zinc-950/40 dark:border-zinc-855 space-y-1">
+              <h4 class="font-bold text-sm text-emerald-600 dark:text-emerald-400">3. Sugar & Ribbons</h4>
+              <p class="text-xs text-stone-500 dark:text-zinc-355 leading-relaxed">
+                Represents vanity, bourgeois consumer luxuries, and the shallow comforts offered by rulers to distract populations from real, lasting freedom. Mollie is obsessed with these elements.
+              </p>
+            </div>
+
+            <div class="p-4 rounded-xl bg-stone-50 border border-stone-150 dark:bg-zinc-950/40 dark:border-zinc-855 space-y-1">
+              <h4 class="font-bold text-sm text-emerald-600 dark:text-emerald-400">4. The Whip</h4>
+              <p class="text-xs text-stone-500 dark:text-zinc-355 leading-relaxed">
+                Represents active physical terror, oppression, labor exploitation, and absolute dictatorial dominance over an unrepresented working underclass.
+              </p>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 5: VOCABULARY FLASHCARDS -->
+      <div x-show="activeTab === 'vocabulary'" class="space-y-8 animate-fadeIn">
+        <div class="text-center max-w-2xl mx-auto space-y-2">
+          <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight">Chapter 1 Vocabulary Mastery</h2>
+          <p class="text-sm text-stone-500 dark:text-zinc-400">
+            To critique language manipulation, we must first master the key vocabulary. Browse through the trainer cards and complete the review challenge.
+          </p>
+        </div>
+
+        <!-- FLASHCARD INTERFACE -->
+        <div class="flex flex-col items-center justify-center max-w-xl mx-auto space-y-4">
+          
+          <div 
+            @click="isCardFlipped = !isCardFlipped"
+            :class="isCardFlipped 
+              ? 'bg-zinc-900 text-white border-amber-500 shadow-xl scale-[1.01]' 
+              : 'bg-white border-stone-200 text-stone-800 shadow-md hover:shadow-lg dark:bg-zinc-900 dark:border-zinc-800 dark:text-zinc-150 dark:hover:border-zinc-700'"
+            class="w-full min-h-[300px] rounded-3xl border cursor-pointer p-6 sm:p-8 flex flex-col justify-between transition-all duration-500 transform relative"
+          >
+            <!-- Card Header -->
+            <div class="flex items-center justify-between">
+              <span class="text-[10px] tracking-widest font-extrabold uppercase text-amber-500" x-text="`CARD ${vocabIndex + 1} OF ${vocabularyData.length}`"></span>
+              <button 
+                @click.stop="speakWord(vocabularyData[vocabIndex].word)"
+                class="p-1.5 rounded-lg bg-emerald-500/15 text-emerald-500 hover:bg-emerald-500/25 transition-all"
+                title="Read Word Out Loud"
+              >
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M15.536 8.464a5 5 0 010 7.072M18.364 5.636a9 9 0 010 12.728M12 18.75V5.25L7.75 9H4.5v6h3.25L12 18.75z" />
+                </svg>
+              </button>
+            </div>
+
+            <!-- Card Core Content -->
+            <div class="flex flex-col items-center justify-center text-center my-6 min-h-[140px]">
+              <template x-if="!isCardFlipped">
+                <div class="space-y-2 animate-fadeIn">
+                  <h3 class="text-3xl font-black tracking-tight" x-text="vocabularyData[vocabIndex].word"></h3>
+                  <span class="inline-block text-xs italic font-semibold text-stone-400 dark:text-zinc-500" x-text="vocabularyData[vocabIndex].type"></span>
+                  <p class="text-xs text-stone-400 dark:text-zinc-500 pt-1" x-text="`[${vocabularyData[vocabIndex].pronunciation}]`"></p>
+                  <span class="block text-[10px] font-bold uppercase text-emerald-500 pt-4 tracking-wider animate-pulse">
+                    Click to Reveal Definition & Context Example
+                  </span>
+                </div>
+              </template>
+              
+              <template x-if="isCardFlipped">
+                <div class="space-y-4 animate-fadeIn w-full">
+                  <div class="space-y-1">
+                    <span class="text-[10px] font-extrabold tracking-widest text-emerald-400 uppercase">DEFINITION</span>
+                    <p class="text-sm sm:text-base text-zinc-200 dark:text-zinc-100 font-medium" x-text="vocabularyData[vocabIndex].definition"></p>
+                  </div>
+                  
+                  <div class="p-3 rounded-xl bg-zinc-950/60 border border-zinc-800 text-left">
+                    <span class="text-[9px] font-bold tracking-widest text-amber-500 uppercase block mb-1">CHAPTER 1 CONTEXT</span>
+                    <p class="text-xs italic text-zinc-350 dark:text-zinc-300 leading-relaxed" x-text="vocabularyData[vocabIndex].example"></p>
+                  </div>
+                </div>
+              </template>
+            </div>
+
+            <!-- Card Footer Hint -->
+            <div class="text-center text-[10px] text-stone-400 dark:text-zinc-500 border-t border-black/5 dark:border-white/5 pt-3">
+              Click inside the card body to flip and toggle views.
+            </div>
+          </div>
+
+          <!-- Flashcard Navigation -->
+          <div class="flex items-center space-x-4 w-full">
+            <button
+              @click="isCardFlipped = false; vocabIndex = (vocabIndex === 0 ? vocabularyData.length - 1 : vocabIndex - 1)"
+              class="flex-1 flex items-center justify-center space-x-1 py-2.5 rounded-xl border transition-all bg-white border-stone-200 text-stone-700 hover:bg-stone-100 dark:bg-zinc-900 dark:border-zinc-800 dark:text-zinc-300 dark:hover:bg-zinc-800"
+            >
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+              </svg> <span>Previous</span>
+            </button>
+            <button
+              @click="isCardFlipped = false; vocabIndex = (vocabIndex === vocabularyData.length - 1 ? 0 : vocabIndex + 1)"
+              class="flex-1 flex items-center justify-center space-x-1 py-2.5 rounded-xl border transition-all bg-white border-stone-200 text-stone-700 hover:bg-stone-100 dark:bg-zinc-900 dark:border-zinc-800 dark:text-zinc-300 dark:hover:bg-zinc-800"
+            >
+              <span>Next</span> 
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+              </svg>
+            </button>
+          </div>
+
+        </div>
+
+        <!-- INTERACTIVE VOCABULARY CHALLENGE QUIZ -->
+        <div class="p-6 rounded-3xl border mt-10 transition-all bg-white border-stone-200 shadow-md dark:bg-zinc-900 dark:border-zinc-800 dark:shadow-inner">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 pb-4 border-b border-stone-150 dark:border-zinc-800">
+            <div class="space-y-1">
+              <h3 class="text-xl font-bold flex items-center gap-2">
+                <svg class="w-5 h-5 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg> Vocabulary Challenge Quiz
+              </h3>
+              <p class="text-xs text-stone-400 dark:text-zinc-500">
+                Prove your lexical mastery of Chapter 1 vocabulary with these targeted reading questions.
+              </p>
+            </div>
+            
+            <template x-if="quizSubmitted">
+              <button 
+                @click="resetQuiz()"
+                class="self-start sm:self-center flex items-center gap-1.5 px-3.5 py-2 bg-stone-100 hover:bg-stone-200 dark:bg-zinc-800 dark:hover:bg-zinc-700 rounded-xl font-bold text-xs transition-all cursor-pointer"
+              >
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 1121.21 8H17" />
+                </svg> Try Again
+              </button>
+            </template>
+          </div>
+
+          <div class="space-y-6">
+            <template x-for="(q, qIdx) in quizQuestions" :key="q.id">
+              <div class="space-y-3">
+                <h4 class="font-bold text-sm sm:text-base">
+                  <span x-text="`Q${qIdx + 1}. `"></span>
+                  <span class="text-emerald-600 dark:text-emerald-400" x-text="`${q.word}: `"></span>
+                  <span x-text="q.question"></span>
+                </h4>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  <template x-for="(opt, optIdx) in q.options" :key="optIdx">
+                    <button
+                      :disabled="quizSubmitted"
+                      @click="quizAnswers[q.id] = optIdx"
+                      :class="getQuizButtonStyle(q.id, optIdx)"
+                      class="p-3.5 rounded-xl border text-left text-xs sm:text-sm leading-relaxed transition-all cursor-pointer flex items-center justify-between"
+                    >
+                      <span x-text="opt"></span>
+                      <template x-if="quizSubmitted && optIdx === q.correctAnswer">
+                        <span class="text-xs font-black text-emerald-600 dark:text-emerald-400 shrink-0 ml-1">✓ Correct</span>
+                      </template>
+                    </button>
+                  </template>
+                </div>
+
+                <template x-if="quizSubmitted && quizAnswers[q.id] !== undefined">
+                  <div class="p-3.5 rounded-xl bg-stone-100 dark:bg-zinc-955/60 text-xs text-stone-500 dark:text-zinc-400 border border-stone-200 dark:border-zinc-850 animate-fadeIn leading-relaxed">
+                    <strong>Analytical Explanation:</strong> <span x-text="q.explanation"></span>
+                  </div>
+                </template>
+              </div>
+            </template>
+          </div>
+
+          <!-- Quiz Action Footer -->
+          <template x-if="!quizSubmitted">
+            <div class="mt-8 pt-4 border-t border-stone-150 dark:border-zinc-855 flex items-center justify-end">
+              <button
+                @click="submitQuiz()"
+                :disabled="Object.keys(quizAnswers).length < quizQuestions.length"
+                :class="Object.keys(quizAnswers).length < quizQuestions.length
+                  ? 'bg-stone-300 dark:bg-zinc-800 text-stone-500 dark:text-zinc-500 cursor-not-allowed shadow-none'
+                  : 'bg-emerald-600 hover:bg-emerald-700 text-white shadow shadow-emerald-500/20'"
+                class="px-5 py-3 rounded-xl font-bold text-sm transition-all cursor-pointer flex items-center gap-1.5"
+              >
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg> Submit Quiz Answers
+              </button>
+            </div>
+          </template>
+
+          <template x-if="quizSubmitted">
+            <div class="mt-8 p-5 rounded-2xl bg-gradient-to-r from-emerald-600 to-teal-700 text-white flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-md animate-fadeIn">
+              <div class="space-y-1">
+                <span class="text-[10px] tracking-widest font-black uppercase text-emerald-200 block">CHALLENGE MET</span>
+                <h4 class="text-xl font-bold" x-text="`Your Score: ${quizScore} / ${quizQuestions.length}`"></h4>
+                <p class="text-xs text-emerald-100" x-text="quizScore === 5 
+                  ? '🎉 Animalist Scholar! You completely understand Orwell\'s vocabulary and contextual allegory.' 
+                  : '👍 Good effort! Review the explanations to master vocabulary context before starting Chapter 1.'">
+                </p>
+              </div>
+              <div class="p-3 rounded-xl bg-white/10 border border-white/20 text-center shrink-0">
+                <span class="block text-[10px] uppercase font-bold text-emerald-200">Award Certificate</span>
+                <span class="text-sm font-black tracking-wide" x-text="quizScore === 5 ? '🎖️ Comrade Lexicographer' : '🎖️ Novice Critic'"></span>
+              </div>
+            </div>
+          </template>
+        </div>
+      </div>
+
+      <!-- TAB 6: HOMEWORK WRITING STUDIO -->
+      <div x-show="activeTab === 'homework'" class="space-y-8 animate-fadeIn">
+        <div class="text-center max-w-2xl mx-auto space-y-2">
+          <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight">Homework Writing Studio</h2>
+          <p class="text-sm text-stone-500 dark:text-zinc-400">
+            Read Chapter 1 of Animal Farm as homework. Then, draft your reflection answers below. Test them against the AI Feedback advisor before saving.
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          
+          <!-- LEFT COLUMN: GUIDELINES & SPECIFICATION -->
+          <div class="lg:col-span-1 space-y-6">
+            
+            <div class="p-5 rounded-2xl border bg-white border-stone-200 dark:bg-zinc-900 dark:border-zinc-800">
+              <h3 class="font-extrabold text-base mb-3 text-emerald-600 dark:text-emerald-400 flex items-center gap-1.5">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                </svg> Reading Checklist
+              </h3>
+              <ul class="space-y-2.5 text-xs text-stone-500 dark:text-zinc-355 leading-relaxed">
+                <li class="flex gap-2">
+                  <span class="text-emerald-600 font-bold">✓</span>
+                  <span>Read through Chapter 1 completely (approx. 10–15 pages).</span>
+                </li>
+                <li class="flex gap-2">
+                  <span class="text-emerald-600 font-bold">✓</span>
+                  <span>Annotate Old Major's speech structure—logos, ethos, pathos.</span>
+                </li>
+                <li class="flex gap-2">
+                  <span class="text-emerald-600 font-bold">✓</span>
+                  <span>Review the physical status and reactions of each key animal.</span>
+                </li>
+                <li class="flex gap-2">
+                  <span class="text-emerald-600 font-bold">✓</span>
+                  <span>Read the lyrics of "Beasts of England" closely.</span>
+                </li>
+              </ul>
+            </div>
+
+            <div class="p-5 rounded-2xl border bg-white border-stone-200 dark:bg-zinc-900 dark:border-zinc-800">
+              <h3 class="font-extrabold text-base mb-3 text-amber-500 flex items-center gap-1.5">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v13m0-13V6a2 2 0 112 2h-2zm0 0V5a2 2 0 10-2 2h2zm0 0H4m8 0h8m-8 0a2 2 0 102 2h-2zm0 0a2 2 0 11-2 2h2z" />
+                </svg> Lesson Evaluation Rubrics
+              </h3>
+              <div class="space-y-2.5 text-xs leading-relaxed text-stone-500 dark:text-zinc-355">
+                <p>
+                  <strong>To achieve "Outstanding (A)":</strong>
+                </p>
+                <ul class="space-y-1.5 list-disc list-inside">
+                  <li>Cite direct quotes from Chapter 1.</li>
+                  <li>Explain the underlying psychological appeal.</li>
+                  <li>Relate Orwell's prose style to the concept of political allegories.</li>
+                </ul>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- RIGHT COLUMN: INTERACTIVE EDITOR & ASSISTANT -->
+          <div class="lg:col-span-2 space-y-6">
+            
+            <div class="p-6 rounded-3xl border bg-white border-stone-200 shadow-sm dark:bg-zinc-900 dark:border-zinc-800">
+              <div class="flex flex-wrap items-center justify-between gap-4 mb-4 pb-3 border-b border-stone-150 dark:border-zinc-800">
+                <h3 class="font-bold text-lg flex items-center gap-1.5">
+                  <svg class="w-5 h-5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                  </svg> Assignment Form
+                </h3>
+                
+                <div class="flex items-center space-x-2">
+                  <button
+                    @click="getAIFeedback()"
+                    :disabled="isGeneratingFeedback"
+                    class="px-3 py-1.5 bg-amber-500/15 text-amber-700 dark:text-amber-400 hover:bg-amber-500/25 rounded-lg text-xs font-bold transition-all flex items-center gap-1 cursor-pointer"
+                  >
+                    <svg :class="isGeneratingFeedback ? 'animate-spin' : ''" class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
+                    </svg>
+                    <span x-text="isGeneratingFeedback ? 'Analysing Draft...' : 'Get AI Feedback'"></span>
+                  </button>
+                  <button
+                    @click="exportHomework()"
+                    class="px-3 py-1.5 bg-emerald-600 text-white hover:bg-emerald-700 rounded-lg text-xs font-bold transition-all flex items-center gap-1 cursor-pointer"
+                    title="Download Homework TXT"
+                  >
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                    </svg>
+                    <span>Export as Text</span>
+                  </button>
+                </div>
+              </div>
+
+              <div class="space-y-6">
+                <!-- QUESTION 1 -->
+                <div class="space-y-2">
+                  <label class="block text-xs sm:text-sm font-bold text-stone-600 dark:text-zinc-300">
+                    Question 1: What makes Old Major an effective speaker in Chapter 1? Cite specific examples from his speech.
+                  </label>
+                  <textarea
+                    x-model="homeworkAnswers.q1"
+                    placeholder="Draft your analytical answer here... (e.g., Old Major establishes credibility by noting his advanced age and impending death, uses 'comrades' to generate collective identity...)"
+                    rows="5"
+                    class="w-full p-4 text-xs sm:text-sm rounded-xl border border-stone-200 dark:border-zinc-800 bg-transparent focus:ring-2 focus:ring-emerald-500 transition-all font-mono leading-relaxed"
+                  ></textarea>
+                </div>
+
+                <!-- QUESTION 2 -->
+                <div class="space-y-2">
+                  <label class="block text-xs sm:text-sm font-bold text-stone-600 dark:text-zinc-350">
+                    Question 2: What does the song "Beasts of England" reveal about the animals' hopes and dreams for the future?
+                  </label>
+                  <textarea
+                    x-model="homeworkAnswers.q2"
+                    placeholder="Draft your answer here... (e.g., The song acts as a radical revolutionary anthem that builds hope of overthrowing humans, listing physical gains: food abundance, freedom from whips...)"
+                    rows="5"
+                    class="w-full p-4 text-xs sm:text-sm rounded-xl border border-stone-200 dark:border-zinc-800 bg-transparent focus:ring-2 focus:ring-emerald-500 transition-all font-mono leading-relaxed"
+                  ></textarea>
+                </div>
+              </div>
+            </div>
+
+            <!-- SIMULATED AI CRITIQUE REPORT PANEL -->
+            <template x-if="aiFeedback">
+              <div 
+                :class="isDarkMode ? 'bg-zinc-900 border-amber-500/40 text-zinc-150' : 'bg-amber-500/5 border-amber-300 text-stone-850 shadow-inner'"
+                class="p-6 rounded-2xl border animate-fadeIn space-y-4"
+              >
+                <div class="flex items-center justify-between">
+                  <h4 class="font-extrabold text-sm sm:text-base flex items-center gap-1.5 text-amber-600 dark:text-amber-400">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
+                    </svg> Draft Critique Advisor
+                  </h4>
+                  <span class="text-[10px] uppercase tracking-widest font-extrabold bg-amber-500/20 text-amber-700 dark:text-amber-400 px-2 py-0.5 rounded-md" x-text="`Draft Status: ${aiFeedback.generalRating}`"></span>
+                </div>
+
+                <div class="space-y-3.5 text-xs sm:text-sm leading-relaxed">
+                  <div class="space-y-1">
+                    <span class="block font-bold text-stone-500 dark:text-zinc-400 uppercase text-[10px]">Q1 Writing Advice:</span>
+                    <p class="p-3 bg-white/45 dark:bg-black/20 rounded-xl border border-black/5 dark:border-white/5" x-text="aiFeedback.q1Feedback"></p>
+                  </div>
+
+                  <div class="space-y-1">
+                    <span class="block font-bold text-stone-500 dark:text-zinc-400 uppercase text-[10px]">Q2 Writing Advice:</span>
+                    <p class="p-3 bg-white/45 dark:bg-black/20 rounded-xl border border-black/5 dark:border-white/5" x-text="aiFeedback.q2Feedback"></p>
+                  </div>
+
+                  <div class="pt-2 border-t border-black/5 dark:border-white/10 flex items-center justify-between text-xs gap-3 flex-wrap">
+                    <p class="text-stone-500 dark:text-zinc-400 italic">
+                      <strong>Key Tip:</strong> <span x-text="aiFeedback.tip"></span>
+                    </p>
+                    <button
+                      @click="copyHomework()"
+                      class="px-3 py-1 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-lg text-xs transition-all cursor-pointer"
+                      x-text="isCopied ? '✓ Copied to Clipboard' : 'Copy Draft Text'"
+                    ></button>
+                  </div>
+                </div>
+              </div>
+            </template>
+
+          </div>
+
+        </div>
+      </div>
+
+    </main>
+
+    <!-- ==========================================
+        FOOTER SECTION
+        ========================================== -->
+    <footer class="border-t py-12 transition-colors bg-stone-100 border-stone-200 dark:bg-zinc-950 dark:border-zinc-900 text-zinc-500">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-4">
+        <p class="text-xs sm:text-sm">
+          SetSail Novel Course — Animal Farm
+        </p>
+      </div>
+    </footer>
+
+  </div>
+</body>
+</html>
